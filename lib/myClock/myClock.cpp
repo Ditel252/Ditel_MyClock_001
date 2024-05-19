@@ -92,6 +92,7 @@ void My_Clock::setDataTime(){
 }
 
 int My_Clock::homeScreen(){
+    My_Clock::Display.display.clearDisplay(My_Clock::Display.color(MC_BLACK));
 
     int nowPosition, lastPosition;
 
@@ -226,11 +227,16 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
     My_Clock::Display.display.fillRect(0, 170, 240, 240 - 170);
     My_Clock::Display.printb("Start", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
 
-    unsigned long int startTime, stopTime, lastReadTime = 0;
+    unsigned long int startTime, stopTime = 0, lastReadTime = 0;
 
     bool isThisFirstTime = true;
+    bool wasRequestedFinish = false;
 
     while(true){
+        My_Clock::Display.display.setColor(My_Clock::Display.display.color888(MC_LIME));
+        My_Clock::Display.display.fillRect(0, 170, 240, 240 - 170);
+        My_Clock::Display.printb("Start", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
+
         while(true){
             M5Dial.update();
             auto touchStatus = M5Dial.Touch.getDetail();
@@ -239,7 +245,15 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
                 break;
 
             delay(1);
+            
+            if(M5.BtnA.wasClicked()){
+                wasRequestedFinish = true;
+                break;
+            }
         }
+
+        if(wasRequestedFinish)
+            break;
 
         while(true){
             M5Dial.update();
@@ -255,19 +269,24 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
             startTime = millis();
             isThisFirstTime = false;
         }else{
-            startTime = millis() + stopTime;
+            startTime = millis() - stopTime;
         }
 
         My_Clock::Display.display.setColor(My_Clock::Display.display.color888(MC_RED));
         My_Clock::Display.display.fillRect(0, 170, 240, 240 - 170);
         My_Clock::Display.printb("Stop", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
         lastReadTime = millis();
+        My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
         sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", (millis() - startTime) / (60 * 60 * 1000), (millis() - startTime) / (60 * 1000), (millis() - startTime) / 1000);
         My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
 
         while(true){
             if((lastReadTime / 1000) != (millis() / 1000)){
-                sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", (millis() - startTime) / (60 * 60 * 1000), (millis() - startTime) / (60 * 1000), (millis() - startTime) / 1000);
+                My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
+                sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", 
+                        (millis() - startTime) / (60 * 60 * 1000), 
+                        ((millis() - startTime) / (60 * 1000)) % (60 * 60), 
+                        ((millis() - startTime) / 1000) % 60);
                 My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
                 lastReadTime = millis();
             }
@@ -292,11 +311,7 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
 
             delay(1);
         }
-
-        while(true){
-            M5.update();
-            if(M5.BtnA.wasClicked())
-                break;
-        }
     }
+
+    _timer->time = (float)((int)stopTime / 1000) / (float)(60 * 60);
 }

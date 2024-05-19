@@ -26,24 +26,17 @@ void setup(){
   myClock.updateData();
 
   myClock.setDataTime();
+}
 
-  myClock.Display.display.clearDisplay(myClock.Display.color(MC_BLACK));
+void loop(){
+  for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+    (myClock.subjectTime + i)->time = 0;
 
   int selectMode = myClock.homeScreen() / 4;
 
   myClock.timer(&(myClock.subjectTime[selectMode]));
-  
-    delay(1000);
 
-}
+  myClock.updateData();
 
-void loop(){
-
-  // if(myClock.Iot.saveToSpreadsheet(subjectTime, a, 2) == MY_CLOCK_IOT_OK){
-  //   Serial.println("Send OK!!");
-  // }    
-
-  //   delay(1000);
-
-  //   Serial.print("Done");
+  myClock.setDataTime();
 }
