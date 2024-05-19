@@ -103,7 +103,7 @@ int My_Clock::homeScreen(){
         M5.update();
 
         nowPosition = M5Dial.Encoder.read();
-        nowPosition = (nowPosition < 0) ? (64 + (nowPosition % 64)) : (nowPosition % 64);
+        nowPosition = (nowPosition < 0) ? (64 - ((-1 *nowPosition) % 64)) : (nowPosition % 64);
 
         if(nowPosition != lastPosition){
             My_Clock::Display.printb("  " + String(nowPosition / 4) + "  ", 240 / 2, 240 / 2 - 50, 

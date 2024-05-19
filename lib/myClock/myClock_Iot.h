@@ -30,8 +30,6 @@ public:
         float totalTime =0;
     }Subject_And_Time;
 
-    // int saveDataToSpreadsheet[SIZE_OF_SAVE_DATA] = {0};
-
     int wifiConnect(NetWork_Info _netWork);
     int wifiDisconnect();
     int saveToSpreadsheet(Subject_And_Time *_saveData, float _readData[][NUMBER_OF_SUBJECTS], uint8_t _numberOfSubject);
