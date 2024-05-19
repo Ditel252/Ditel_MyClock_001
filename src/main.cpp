@@ -29,7 +29,9 @@ void setup(){
 
   myClock.Display.display.clearDisplay(myClock.Display.color(MC_BLACK));
 
-  myClock.homeScreen();
+  int selectMode = myClock.homeScreen() / 4;
+
+  myClock.timer(&(myClock.subjectTime[selectMode]));
   
     delay(1000);
 

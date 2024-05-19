@@ -25,4 +25,5 @@ public:
     int updateData();
     void setDataName();
     void setDataTime();
+    void timer(My_Clock_Iot::Subject_And_Time *_timer);
 };

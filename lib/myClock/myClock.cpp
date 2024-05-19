@@ -95,7 +95,8 @@ int My_Clock::homeScreen(){
 
     int nowPosition, lastPosition;
 
-    lastPosition = nowPosition = 0;
+    lastPosition = -999;
+    nowPosition = 0;
 
     while(true){
         M5.update();
@@ -203,4 +204,99 @@ int My_Clock::updateData(){
     }
 
     return functionResult;
+}
+
+void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
+    My_Clock::Display.display.clear(My_Clock::Display.display.color888(MC_WHITE));
+
+    My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
+    My_Clock::Display.display.setTextDatum(middle_center);
+    My_Clock::Display.display.setTextSize(1);
+    My_Clock::Display.display.setCursor(120, 120);
+    My_Clock::Display.display.setTextColor(TFT_BLACK, TFT_WHITE);
+
+    My_Clock::Display.print(String(_timer->nameJP), 240 / 2, 240 / 2 - 30, 2, middle_center, My_Clock::Display.color(MC_LAUN_GREEN), My_Clock::Display.color(MC_WHITE));
+
+    My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
+    My_Clock::Display.display.setTextDatum(middle_center);
+    My_Clock::Display.display.setTextSize(1);
+    My_Clock::Display.display.drawString("00:00:00", 240 / 2, 240 / 2 + 17, &fonts::Font7);
+
+    My_Clock::Display.display.setColor(My_Clock::Display.display.color888(MC_LIME));
+    My_Clock::Display.display.fillRect(0, 170, 240, 240 - 170);
+    My_Clock::Display.printb("Start", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
+
+    unsigned long int startTime, stopTime, lastReadTime = 0;
+
+    bool isThisFirstTime = true;
+
+    while(true){
+        while(true){
+            M5Dial.update();
+            auto touchStatus = M5Dial.Touch.getDetail();
+
+            if(touchStatus.state != 0 && touchStatus.y > 170)
+                break;
+
+            delay(1);
+        }
+
+        while(true){
+            M5Dial.update();
+            auto touchStatus = M5Dial.Touch.getDetail();
+
+            if(touchStatus.state == 0)
+                break;
+
+            delay(1);
+        }
+
+        if(isThisFirstTime){
+            startTime = millis();
+            isThisFirstTime = false;
+        }else{
+            startTime = millis() + stopTime;
+        }
+
+        My_Clock::Display.display.setColor(My_Clock::Display.display.color888(MC_RED));
+        My_Clock::Display.display.fillRect(0, 170, 240, 240 - 170);
+        My_Clock::Display.printb("Stop", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
+        lastReadTime = millis();
+        sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", (millis() - startTime) / (60 * 60 * 1000), (millis() - startTime) / (60 * 1000), (millis() - startTime) / 1000);
+        My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
+
+        while(true){
+            if((lastReadTime / 1000) != (millis() / 1000)){
+                sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", (millis() - startTime) / (60 * 60 * 1000), (millis() - startTime) / (60 * 1000), (millis() - startTime) / 1000);
+                My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
+                lastReadTime = millis();
+            }
+            
+            M5Dial.update();
+            auto touchStatus = M5Dial.Touch.getDetail();
+
+            if(touchStatus.state != 0 && touchStatus.y > 170)
+                break;
+
+            delay(1);
+        }
+
+        stopTime = millis() - startTime;
+
+        while(true){
+            M5Dial.update();
+            auto touchStatus = M5Dial.Touch.getDetail();
+
+            if(touchStatus.state == 0)
+                break;
+
+            delay(1);
+        }
+
+        while(true){
+            M5.update();
+            if(M5.BtnA.wasClicked())
+                break;
+        }
+    }
 }
