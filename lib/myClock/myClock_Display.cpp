@@ -16,7 +16,7 @@ void My_Clock_Display::print(String _str, uint8_t _x, uint8_t _y, float _size, u
 
     My_Clock_Display::display.setTextDatum(_datum);
 
-    if(_size <= 2){
+    if(_size < 2){
         My_Clock_Display::display.setTextSize(_size);
         My_Clock_Display::display.drawString(_str, _x, _y, &lgfx::fonts::lgfxJapanGothic_20);
     }else{
