@@ -277,7 +277,10 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
         My_Clock::Display.printb("Stop", 240 / 2, 202, 1, middle_center, My_Clock::Display.display.color888(MC_WHITE), -1);
         lastReadTime = millis();
         My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
-        sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", (millis() - startTime) / (60 * 60 * 1000), (millis() - startTime) / (60 * 1000), (millis() - startTime) / 1000);
+        sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", 
+                (millis() - startTime) / (60 * 60 * 1000), 
+                ((millis() - startTime) / (60 * 1000)) % 60, 
+                ((millis() - startTime) / 1000) % 60);
         My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
 
         while(true){
@@ -285,7 +288,7 @@ void My_Clock::timer(My_Clock_Iot::Subject_And_Time *_timer){
                 My_Clock::Display.display.setTextColor(My_Clock::Display.display.color888(MC_ORANGE), My_Clock::Display.display.color888(MC_WHITE));
                 sprintf(My_Clock::temporaryString, "%02d:%02d:%02d", 
                         (millis() - startTime) / (60 * 60 * 1000), 
-                        ((millis() - startTime) / (60 * 1000)) % (60 * 60), 
+                        ((millis() - startTime) / (60 * 1000)) % 60, 
                         ((millis() - startTime) / 1000) % 60);
                 My_Clock::Display.display.drawString(My_Clock::temporaryString, 240 / 2, 240 / 2 + 17, &fonts::Font7);
                 lastReadTime = millis();

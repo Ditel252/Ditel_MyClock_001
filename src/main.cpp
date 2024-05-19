@@ -51,12 +51,14 @@ void loop(){
     break;
   default:
     myClock.timer(&(myClock.subjectTime[selectMode]));
-    if(myClock.updateData() == MY_CLOCK_IOT_OK){
-      for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
-        (myClock.subjectTime + i)->time = 0;
+    if(myClock.subjectTime[selectMode].time > 0){
+      if(myClock.updateData() == MY_CLOCK_IOT_OK){
+        for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+          (myClock.subjectTime + i)->time = 0;
 
-      myClock.setDataTime();
+        myClock.setDataTime();
+      }
+      break;
     }
-    break;
   }
 }
