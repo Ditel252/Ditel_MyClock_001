@@ -12,6 +12,7 @@
 #define MC_AQUA         0,255,255
 #define MC_RED          255,0,0
 #define MC_LAUN_GREEN   154,205,50
+#define MC_LIME         0,200,0
 
 class My_Clock_Display{
 private:

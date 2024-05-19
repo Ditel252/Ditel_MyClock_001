@@ -51,3 +51,156 @@ int My_Clock::connectToNetwork(My_Clock_Iot::NetWork_Info _network){
     return functionResult;
 }
 
+void My_Clock::setDataName(){
+    strcpy((subjectTime + 0)->nameEN, "Control_Engineering");
+    strcpy((subjectTime + 0)->nameJP, "制御工学");
+
+    strcpy((subjectTime + 1)->nameEN, "Applied_Mathematics_B");
+    strcpy((subjectTime + 1)->nameJP, "応用数学B");
+
+    strcpy((subjectTime + 2)->nameEN, "Kinematics_Of_Kachines_II");
+    strcpy((subjectTime + 2)->nameJP, "機械運動学II");
+
+    strcpy((subjectTime + 3)->nameEN, "Electrodynamics_And_Magnetics_II");
+    strcpy((subjectTime + 3)->nameJP, "電機磁気学II");
+
+    strcpy((subjectTime + 4)->nameEN, "Applied_Physics_I");
+    strcpy((subjectTime + 4)->nameJP, "応用物理I");
+
+    strcpy((subjectTime + 5)->nameEN, "Applied_Mathematics_D");
+    strcpy((subjectTime + 5)->nameJP, "応用数学D");
+
+    strcpy((subjectTime + 6)->nameEN, "Measurement_Engineering");
+    strcpy((subjectTime + 6)->nameJP, "計測工学");
+
+    strcpy((subjectTime + 7)->nameEN, "German");
+    strcpy((subjectTime + 7)->nameJP, "ドイツ語");
+
+    strcpy((subjectTime + 8)->nameEN, "Synthetic_Japanese");
+    strcpy((subjectTime + 8)->nameJP, "総合国語");
+
+    strcpy((subjectTime + 9)->nameEN, "Information_Processing_III");
+    strcpy((subjectTime + 9)->nameJP, "情報処理III");
+}
+
+void My_Clock::setDataTime(){
+    for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+        (subjectTime + i)->totalTime = _timeDataArray[0][i];
+
+    for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+        (subjectTime + i)->todaysTotalTime = _timeDataArray[1][i];
+}
+
+int My_Clock::homeScreen(){
+
+    int nowPosition, lastPosition;
+
+    lastPosition = nowPosition = 0;
+
+    while(true){
+        M5.update();
+
+        nowPosition = M5Dial.Encoder.read();
+        nowPosition = (nowPosition < 0) ? (64 + (nowPosition % 64)) : (nowPosition % 64);
+
+        if(nowPosition != lastPosition){
+            My_Clock::Display.printb("  " + String(nowPosition / 4) + "  ", 240 / 2, 240 / 2 - 50, 
+                                    1, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+
+            switch(nowPosition / 4){
+            case POSITION_OF_SETTING:
+                My_Clock::Display.print("　　　設定　　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_SET_ALARM:
+                My_Clock::Display.print("　　アラーム設定　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_UPDATE_DATA:
+                My_Clock::Display.print("　　データ更新　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_NULL1:
+                My_Clock::Display.print("　　　NULL　　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_NULL2:
+                My_Clock::Display.print("　　　NULL　　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_TIME:
+                My_Clock::Display.print("　　　時計　　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
+                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
+                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            default:
+                My_Clock::Display.print("　　" + String((subjectTime + nowPosition / 4)->nameJP) + "　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+
+                sprintf(My_Clock::temporaryString, "%02d:%02d", (int)(subjectTime + nowPosition / 4)->totalTime, 
+                        (int)((float)((float)((subjectTime + nowPosition / 4)->totalTime) - (int)((subjectTime + nowPosition / 4)->totalTime)) * 60.0));
+                My_Clock::Display.printb("  " + String(My_Clock::temporaryString) + "  ", 240 / 2, 240 / 2 + 50, 
+                                        0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+
+                sprintf(My_Clock::temporaryString, "%02d:%02d", (int)(subjectTime + nowPosition / 4)->todaysTotalTime, 
+                        (int)((float)((float)((subjectTime + nowPosition / 4)->todaysTotalTime) - (int)((subjectTime + nowPosition / 4)->todaysTotalTime)) * 60.0));
+                My_Clock::Display.printb("  " + String(My_Clock::temporaryString) + "  ", 240 / 2, 240 / 2 + 90, 
+                                        0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            }
+        }
+
+        lastPosition = nowPosition;
+
+        if(M5.BtnA.wasClicked())
+            break;
+    }
+
+    return lastPosition;
+}
+
+int My_Clock::updateData(){
+    My_Clock::Display.display.clearDisplay(My_Clock::Display.color(MC_WHITE));
+    My_Clock::Display.printb("Update Data", 240 / 2, 240 / 2, 0.5, middle_center, My_Clock::Display.color(MC_ORANGE), -1);
+
+    delay(100);
+
+    int functionResult = My_Clock::Iot.saveToSpreadsheet(subjectTime, _timeDataArray, NUMBER_OF_SUBJECTS);
+
+    if(functionResult == MY_CLOCK_IOT_OK){
+        My_Clock::Display.printb("Updated!!", 240 / 2, 240 / 2 + 30, 0.5, middle_center, My_Clock::Display.color(MC_LAUN_GREEN), -1);
+    }else{
+        My_Clock::Display.printb("Error", 240 / 2, 240 / 2 + 30, 0.5, middle_center, My_Clock::Display.color(MC_RED), -1);
+    }
+
+    while(true){
+        M5.update();
+        if(M5.BtnA.wasClicked())
+            break;
+    }
+
+    return functionResult;
+}
