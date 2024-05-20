@@ -42,7 +42,6 @@ void loop(){
       myClock.setDataTime();
     }
     break;
-    break;
   case POSITION_OF_NULL1:
     break;
   case POSITION_OF_NULL2:

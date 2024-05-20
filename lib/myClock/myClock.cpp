@@ -24,8 +24,11 @@ void My_Clock::startAnimation(){
 }
 
 void My_Clock::selectNetwork(My_Clock_Iot::NetWork_Info *_network){
-  strcpy(_network->ssid, "elecom-9fde2b");
-  strcpy(_network->password, "ymkfc33rnd7u");
+//   strcpy(_network->ssid, "elecom-9fde2b");
+//   strcpy(_network->password, "ymkfc33rnd7u");
+
+//   strcpy(_network->ssid, "SD_Card");
+//   strcpy(_network->password, "dssd05140520");
 }
 
 int My_Clock::connectToNetwork(My_Clock_Iot::NetWork_Info _network){

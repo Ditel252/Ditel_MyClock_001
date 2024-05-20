@@ -1,11 +1,36 @@
 #include "myClock_Iot.h"
+#include <esp_wpa2.h>
 
 int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
+    // bool connectToNetwork = false;
+
+    // WiFi.mode(WIFI_STA);
+    // WiFi.disconnect();
+    // WiFi.begin(_netWork.ssid, _netWork.password);
+
+    // for(int i  = 0; i <= 100; i++){
+    //     if(WiFi.status() == WL_CONNECTED){
+    //         connectToNetwork = true;
+    //         break;
+    //     }
+
+    //     delay(100);
+    // }
+
+    // if(connectToNetwork)
+    //     return MY_CLOCK_IOT_OK;
+    // else
+    //     return MY_CLOCK_IOT_ERROR_CONNECT_TO_NETWORK;
+    
     bool connectToNetwork = false;
 
+    WiFi.disconnect(true);
     WiFi.mode(WIFI_STA);
-    WiFi.disconnect();
-    WiFi.begin(_netWork.ssid, _netWork.password);
+    esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)"", strlen(""));
+    esp_wifi_sta_wpa2_ent_set_username((uint8_t *)"2021d17", strlen("2021d17"));
+    esp_wifi_sta_wpa2_ent_set_password((uint8_t *)"SD-sd-2005-05-14", strlen("SD-sd-2005-05-14"));
+    esp_wifi_sta_wpa2_ent_enable();
+    WiFi.begin("wscampus");
 
     for(int i  = 0; i <= 100; i++){
         if(WiFi.status() == WL_CONNECTED){
@@ -23,7 +48,7 @@ int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
 }
 
 int My_Clock_Iot::wifiDisconnect(){
-    if(WiFi.disconnect())
+    if(WiFi.disconnect(true))
         return MY_CLOCK_IOT_OK;
     else
         return MY_CLOCK_IOT_ERROR_DISCONNECT_FROM_NETWORK;
