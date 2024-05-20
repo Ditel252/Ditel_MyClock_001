@@ -13,7 +13,7 @@
 class My_Clock_Iot{
 private:
     //設定
-    const String scriptBaseUrl = "https://script.google.com/macros/s/AKfycbwn6DiVu5XSp2_6SFXyY6TfuGNydIeVxk0UXhYt8LH9ETGXnYBnVZQHiT2VxHES8DGO/exec";
+    const String scriptBaseUrl = "https://script.google.com/macros/s/AKfycbxi7IOhBD6tGGu3aCOv7Z1XgsEDBp-PBcliaCINOGs-MYQ9eGYyiTwrQrBR5UEz9eKoOw/exec";
 
     void convetStrToFloat(String _str, float _outData[][NUMBER_OF_SUBJECTS]);
 public:
