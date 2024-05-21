@@ -4,15 +4,15 @@
 int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
     bool connectToNetwork = false;
 
-    WiFi.disconnect(true);
-    WiFi.mode(WIFI_STA);
-
     switch(_netWork.securityMode){
     case NETWORK_SECURITY_MODE_NORMAL:
+        WiFi.disconnect(true);
+        WiFi.mode(WIFI_STA);
         WiFi.begin(_netWork.ssid, _netWork.password);
         break;
     
     case NETWORK_SECURITY_MODE_WPA2:
+        WiFi.mode(WIFI_STA);
         esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)"", strlen(""));
         esp_wifi_sta_wpa2_ent_set_username((uint8_t *)_netWork.userName, strlen(_netWork.userName));
         esp_wifi_sta_wpa2_ent_set_password((uint8_t *)_netWork.password, strlen(_netWork.password));
