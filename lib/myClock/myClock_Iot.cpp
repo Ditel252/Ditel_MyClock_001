@@ -1,11 +1,20 @@
 #include "myClock_Iot.h"
+#include <esp_wpa2.h>
 
 int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
     bool connectToNetwork = false;
-
+    WiFi.disconnect(true);
     WiFi.mode(WIFI_STA);
-    WiFi.disconnect();
-    WiFi.begin(_netWork.ssid, _netWork.password);
+
+    switch(_netWork.securityMode){
+    case NETWORK_SECURITY_MODE_NORMAL:
+        WiFi.begin(_netWork.ssid, _netWork.password);
+        break;
+    
+    case NETWORK_SECURITY_MODE_WPA2:
+        WiFi.begin(_netWork.ssid, WPA2_AUTH_PEAP, "",_netWork.userName, _netWork.password);
+        break;
+    }
 
     for(int i  = 0; i <= 100; i++){
         if(WiFi.status() == WL_CONNECTED){
@@ -16,6 +25,7 @@ int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
         delay(100);
     }
 
+
     if(connectToNetwork)
         return MY_CLOCK_IOT_OK;
     else
@@ -23,7 +33,7 @@ int My_Clock_Iot::wifiConnect(NetWork_Info _netWork){
 }
 
 int My_Clock_Iot::wifiDisconnect(){
-    if(WiFi.disconnect())
+    if(WiFi.disconnect(true))
         return MY_CLOCK_IOT_OK;
     else
         return MY_CLOCK_IOT_ERROR_DISCONNECT_FROM_NETWORK;
@@ -80,6 +90,7 @@ void My_Clock_Iot::convetStrToFloat(String _str, float _outData[][NUMBER_OF_SUBJ
         }
 
         int i = 0;
+
         while(1){
             charOfString[i] = charOfString[countOfWord + 1 + i];
 

@@ -23,9 +23,64 @@ void My_Clock::startAnimation(){
     }
 }
 
-void My_Clock::selectNetwork(My_Clock_Iot::NetWork_Info *_network){
-  strcpy(_network->ssid, "elecom-9fde2b");
-  strcpy(_network->password, "ymkfc33rnd7u");
+My_Clock_Iot::NetWork_Info My_Clock::selectNetwork(){
+    My_Clock_Iot::NetWork_Info *_network;
+    _network = (My_Clock_Iot::NetWork_Info *)malloc(sizeof(My_Clock_Iot::NetWork_Info) * NUMBER_OF_REGISTERED_NETWORKS);
+    
+    strcpy((_network + 0)->ssid, "elecom-9fde2b");
+    strcpy((_network + 0)->password, "ymkfc33rnd7u");
+    (_network + 0)->securityMode = NETWORK_SECURITY_MODE_NORMAL;
+
+    strcpy((_network + 1)->ssid, "SD_Card");
+    strcpy((_network + 1)->password, "dssd05140520");
+    (_network + 1)->securityMode = NETWORK_SECURITY_MODE_NORMAL;
+
+    strcpy((_network + 2)->ssid, "wscampus");
+    strcpy((_network + 2)->userName, "2021d17");
+    strcpy((_network + 2)->password, "SD-sd-2005-05-14");
+    (_network + 2)->securityMode = NETWORK_SECURITY_MODE_WPA2;
+
+    strcpy((_network + 3)->ssid, "wscampus2");
+    strcpy((_network + 3)->userName, "2021d17");
+    strcpy((_network + 3)->password, "SD-sd-2005-05-14");
+    (_network + 3)->securityMode = NETWORK_SECURITY_MODE_WPA2;
+    uint8_t selectNetwork = 0;
+    int32_t nowReadEncoder = 0;
+
+    My_Clock::Display.display.clearDisplay(My_Clock::Display.color(MC_WHITE));
+    My_Clock::Display.printb("Select Network", 240 / 2, 240 / 2, 0.5, middle_center, 
+                            My_Clock::Display.color(MC_ORANGE), My_Clock::Display.color(MC_WHITE));
+    My_Clock::Display.printb(String("        ") + (_network + selectNetwork)->ssid + "        ", 
+                            240 / 2, 240 / 2 + 30, 0.5, middle_center, My_Clock::Display.color(MC_LAUN_GREEN), 
+                            My_Clock::Display.color(MC_WHITE));
+
+    while(true){
+        M5Dial.update();
+
+        nowReadEncoder = M5Dial.Encoder.read();
+
+        if(abs(nowReadEncoder) >= 4){
+            if((nowReadEncoder) >= 4){
+                if(selectNetwork < (NUMBER_OF_REGISTERED_NETWORKS - 1))
+                    selectNetwork++;
+            }else if((nowReadEncoder) <= -4){
+                if(selectNetwork > 0)
+                    selectNetwork--;
+            }
+
+            M5Dial.Encoder.readAndReset();
+
+            My_Clock::Display.printb(String("        ") + (_network + selectNetwork)->ssid + "        ", 240 / 2, 240 / 2 + 30, 0.5, middle_center, My_Clock::Display.color(MC_LAUN_GREEN), My_Clock::Display.color(MC_WHITE));
+
+            delay(10);
+        }
+
+        delay(1);
+
+        if(M5.BtnA.wasClicked()){
+            return *(_network + selectNetwork);
+        }
+    }
 }
 
 int My_Clock::connectToNetwork(My_Clock_Iot::NetWork_Info _network){
@@ -108,6 +163,11 @@ int My_Clock::homeScreen(){
         if(nowPosition != lastPosition){
             My_Clock::Display.printb("  " + String(nowPosition / 4) + "  ", 240 / 2, 240 / 2 - 50, 
                                     1, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+            float sumOfTotalTime[2] ={0};
+            for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+                sumOfTotalTime[0] += _timeDataArray[0][i];
+            for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
+                sumOfTotalTime[1] += _timeDataArray[1][i];
 
             switch(nowPosition / 4){
             case POSITION_OF_SETTING:
@@ -142,14 +202,6 @@ int My_Clock::homeScreen(){
                 My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
                                     0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
                 break;
-            case POSITION_OF_NULL2:
-                My_Clock::Display.print("　　　NULL　　　", 240 / 2, 240 / 2, 
-                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
-                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 50, 
-                                    0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
-                My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
-                                    0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
-                break;
             case POSITION_OF_TIME:
                 My_Clock::Display.print("　　　時計　　　", 240 / 2, 240 / 2, 
                                     2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
@@ -157,6 +209,20 @@ int My_Clock::homeScreen(){
                                     0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
                 My_Clock::Display.printb("          ", 240 / 2, 240 / 2 + 90, 
                                     0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+                break;
+            case POSITION_OF_TOTAL_TIME:
+                My_Clock::Display.print("　　　勉強時間　　　", 240 / 2, 240 / 2, 
+                                    2, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+
+                sprintf(My_Clock::temporaryString, "%02d:%02d", (int)(sumOfTotalTime[0]), 
+                        (int)((float)((float)(sumOfTotalTime[0]) - (int)(sumOfTotalTime[0])) * 60.0));
+                My_Clock::Display.printb("  " + String(My_Clock::temporaryString) + "  ", 240 / 2, 240 / 2 + 50, 
+                                        0.8, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
+
+                sprintf(My_Clock::temporaryString, "%02d:%02d", (int)(sumOfTotalTime[1]), 
+                        (int)((float)((float)(sumOfTotalTime[1]) - (int)(sumOfTotalTime[1])) * 60.0));
+                My_Clock::Display.printb("  " + String(My_Clock::temporaryString) + "  ", 240 / 2, 240 / 2 + 90, 
+                                        0.6, middle_center, My_Clock::Display.color(MC_WHITE), My_Clock::Display.color(MC_BLACK));
                 break;
             default:
                 My_Clock::Display.print("　　" + String((subjectTime + nowPosition / 4)->nameJP) + "　　", 240 / 2, 240 / 2, 

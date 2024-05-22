@@ -5,8 +5,10 @@
 #define POSITION_OF_SET_ALARM   11
 #define POSITION_OF_UPDATE_DATA 12
 #define POSITION_OF_NULL1       13
-#define POSITION_OF_NULL2       14
-#define POSITION_OF_TIME        15
+#define POSITION_OF_TIME        14
+#define POSITION_OF_TOTAL_TIME  15
+
+#define NUMBER_OF_REGISTERED_NETWORKS 4
 
 class My_Clock{
 private:
@@ -19,7 +21,7 @@ public:
 
     void init();
     void startAnimation();
-    void selectNetwork(My_Clock_Iot::NetWork_Info *_network);
+    My_Clock_Iot::NetWork_Info selectNetwork();
     int connectToNetwork(My_Clock_Iot::NetWork_Info _network);
     int homeScreen();
     int updateData();

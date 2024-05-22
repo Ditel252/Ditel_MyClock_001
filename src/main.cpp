@@ -1,21 +1,19 @@
 #include "../lib/myClock/myClock.h"
 
-My_Clock_Iot::NetWork_Info *network;
+My_Clock_Iot::NetWork_Info network;
 
 My_Clock myClock;
 
 void setup(){
-  Serial.begin(9600);
-
-  network = (My_Clock_Iot::NetWork_Info *)malloc(sizeof(My_Clock_Iot::NetWork_Info));
-
+  // Serial.begin(9600);
+  
   myClock.init();
 
   myClock.startAnimation();
 
-  myClock.selectNetwork(network);
+  network = myClock.selectNetwork();
 
-  myClock.connectToNetwork(*network);
+  myClock.connectToNetwork(network);
 
   myClock.setDataName();
 
@@ -34,7 +32,8 @@ void loop(){
     break;
   case POSITION_OF_UPDATE_DATA:
     myClock.Iot.wifiDisconnect();
-    myClock.connectToNetwork(*network);
+    network = myClock.selectNetwork();
+    myClock.connectToNetwork(network);
     if(myClock.updateData() == MY_CLOCK_IOT_OK){
       for(int i = 0; i < NUMBER_OF_SUBJECTS; i++)
         (myClock.subjectTime + i)->time = 0;
@@ -42,12 +41,11 @@ void loop(){
       myClock.setDataTime();
     }
     break;
-    break;
   case POSITION_OF_NULL1:
     break;
-  case POSITION_OF_NULL2:
-    break;
   case POSITION_OF_TIME:
+    break;
+  case POSITION_OF_TOTAL_TIME:
     break;
   default:
     myClock.timer(&(myClock.subjectTime[selectMode]));

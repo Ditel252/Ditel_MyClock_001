@@ -10,6 +10,9 @@
 
 #define NUMBER_OF_SUBJECTS 10
 
+#define NETWORK_SECURITY_MODE_NORMAL 0x00
+#define NETWORK_SECURITY_MODE_WPA2  0x01
+
 class My_Clock_Iot{
 private:
     //設定
@@ -20,6 +23,8 @@ public:
     typedef struct{
         char ssid[32] = {0};
         char password[32] = {0};
+        char userName[32] = {0};
+        uint8_t securityMode = NETWORK_SECURITY_MODE_NORMAL;
     }NetWork_Info;
 
     typedef struct{
