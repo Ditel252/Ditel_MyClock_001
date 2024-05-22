@@ -5,8 +5,8 @@ My_Clock_Iot::NetWork_Info network;
 My_Clock myClock;
 
 void setup(){
-  Serial.begin(9600);
-
+  // Serial.begin(9600);
+  
   myClock.init();
 
   myClock.startAnimation();
